@@ -21,6 +21,17 @@ cli.
 It seems that much of the cli could be written as a variant of the todo.txt-cli, but I would rather work in python
 for now.
 
+
+Dependencies
+------------
+
+python's argcomplete, available through pip:
+   pip install argcomplete
+
+
+
+
+
 License:
 --------
 
