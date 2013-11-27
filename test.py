@@ -71,13 +71,44 @@ def input_loop():
         line = raw_input('Prompt ("stop" to quit): ')
         print 'Dispatch %s' % line
 
+def readNames(fname="grade.txt"):
+    f = open(fname, 'rU')
+    names = []
+    for line in f:
+	data = line.strip().split(";")
+	if data[0].split(":")[0] == "name":
+	    x = data[0].split(":")[1].replace("\"", "")
+	    names.append(x)
+    return names
+
+def parsePAIRS(fname="grade.txt"):
+    f = open(fname, 'rU')
+    possibilities = {}
+    for line in f:
+	print line
+	data = line.strip().split(';')
+	for pair in data:
+	    print pair
+	    info = pair.strip().split(':')
+	    key = info[0].strip().replace('\"','')
+	    val = info[1].strip().replace('\"','')
+	    if key not in possibilities:
+		possibilities[key] = set([val])
+	    else:
+		possibilities[key].add(val)
+    return possibilities
+
+#names = readNames()
+
+poss = parsePAIRS()
+print poss
 # Register our completer function
-readline.set_completer(BufferAwareCompleter(
-    {'list':['files', 'directories'],
-     'name':[],
-     'skill':['M newton', 'R evidence', 'C graph'],
+defaults =     {'date':['today'],
      'stop':[],
-    }).complete)
+    }
+completions = dict(defaults.items() + poss.items())
+
+readline.set_completer(BufferAwareCompleter(completions).complete)
 
 # Use the tab key for completion
 readline.parse_and_bind('tab: complete')
