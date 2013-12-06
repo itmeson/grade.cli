@@ -47,6 +47,57 @@ class BufferAwareCompleter(object):
             response = None
         return response
 
+    def comp(self, text, state):
+	response = None
+	if state == 0:
+            # This is the first time for this text, so build a match list.
+            origline = readline.get_line_buffer()
+            begin = readline.get_begidx()
+            end = readline.get_endidx()
+            being_completed = origline[begin:end]
+            words = origline.split(';')
+	    
+            logging.debug('origline=%s', repr(origline))
+            logging.debug('begin=%s', begin)
+            logging.debug('end=%s', end)
+            logging.debug('being_completed=%s', being_completed)
+            logging.debug('words=%s', words)
+            
+            if not words:
+                self.current_candidates = sorted(self.options.keys())
+            else:
+                try:
+                    if begin == 0:
+                        # first word
+                        candidates = self.options.keys()
+                    else:
+                        # later word
+                        first = words[0]
+                        candidates = self.options[first]
+                    
+                    if being_completed:
+                        # match options with portion of input
+                        # being completed
+                        self.current_candidates = [ w for w in candidates
+                                                    #if w.startswith(being_completed) ]
+						   if being_completed in w ]
+                    else:
+                        # matching empty string so use all candidates
+                        self.current_candidates = candidates
+
+                    logging.debug('candidates=%s', self.current_candidates)
+                    
+                except (KeyError, IndexError), err:
+                    logging.error('completion error: %s', err)
+                    self.current_candidates = []
+        
+        try:
+            response = self.current_candidates[state]
+        except IndexError:
+            response = None
+        logging.debug('complete(%s, %s) => %s', repr(text), state, response)
+        return response
+            
 
 
 
@@ -122,20 +173,30 @@ def readNames(fname="grade.txt"):
 	    names.append(x)
     return names
 
-def parsePAIRS(fname="grade.txt"):
-    f = open(fname, 'rU')
-    possibilities = {}
-    for line in f:
-	data = line.strip().split(';')
-	for pair in data:
-	    info = pair.strip().split(':')
-	    key = info[0].strip().replace('\"','')
-	    val = info[1].strip().replace('\"','')
-	    if key not in possibilities:
-		possibilities[key] = set([val])
-	    else:
-		possibilities[key].add(val)
-    return possibilities
+
+class Grade():
+    def __init__(self, fname="grade.txt"):
+	self.fname = fname	
+	self.parsePAIRS()
+
+    def parsePAIRS(self):
+        f = open(self.fname, 'rU')
+        self.possibilities = {}
+	self.dataTYPES = set([])
+        for line in f:
+	    data = line.strip().split(';')
+	    for pair in data:
+	        info = pair.strip().split(':')
+	        if len(info) == 1:   #this means it's content type
+		    self.dataTYPES.add(info[0])
+	        else:
+	    	    key = info[0].strip().replace('\"','')
+	    	    val = info[1].strip().replace('\"','')
+	    	    if key not in self.possibilities:
+			self.possibilities[key] = set([val])
+	    	    else:
+			self.possibilities[key].add(val)
+   
 
 
 def enterAttendance():
@@ -150,7 +211,7 @@ def enterAttendance():
 	if line == 'stop':
 	    break
         else:
-	    out = "date:" + todaysDATE + "; " 
+	    out = "att; date:" + todaysDATE + "; " 
 	    name = line.strip().replace('name ','') 
 	    out += "name:" + name + "; "
 	    out += "present:1\n"
@@ -165,8 +226,10 @@ def reportAttendance(date=time.strftime('%m/%d/%Y')):
     present = []
     for line in f:
         data = line.strip().split(';')
+	if data[0] != "att":
+	    continue
 	entry = {}
-        for pair in data:
+        for pair in data[1:]:
 	    info = pair.strip().split(':')
 	    
 	    key = info[0].strip().replace('\"','')
@@ -181,21 +244,25 @@ def reportAttendance(date=time.strftime('%m/%d/%Y')):
 
 	     
 	    
+import sys
+if len(sys.argv) > 1:
+    fname = sys.argv[1]
+else:
+    fname = "grade.txt"
 	
+GradeBook = Grade(fname)
 
-
-#names = readNames()
-
-poss = parsePAIRS()
+print GradeBook.dataTYPES
+#poss = parsePAIRS()
 # Register our completer function
 defaults =     {
      'stop':[],
-     'attendance':[],
+     'att':[],
      'report Attendance':[]
     }
-ActionDict = {'attendance':enterAttendance, 'report Attendance':reportAttendance}
+ActionDict = {'att':enterAttendance, 'report Attendance':reportAttendance}
 
-completions = dict(defaults.items() + poss.items())
+completions = dict(defaults.items() + GradeBook.possibilities.items())#poss.items())
 
 readline.set_completer(BufferAwareCompleter(completions).complete)
 
