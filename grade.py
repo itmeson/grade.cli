@@ -198,6 +198,51 @@ class Grade():
 			self.possibilities[key].add(val)
    
 
+    def outputLine(self, entryType, lineData):
+	f = open(self.fname, 'a')
+	line = entryType + '; '
+	for key in lineData:
+	    line +=  key + ':' + lineData[key] + '; '
+	f.write(line+ '\n')
+	f.close()
+
+
+
+    def input_loop2(self, completions):
+        line = ''
+        entryType = ''
+	lineData = {}
+	while line != 'stop':
+            temp = raw_input('Entry type ("stop") to quit)[enter] to use default\n')
+            if temp == 'stop':
+	        break
+
+	    if temp != '':
+		entryType = temp
+	    
+	    line = entryType + '; '
+            key = 'a'
+
+            while key != '':
+    	        key = ''
+	        readline.set_completer(BufferAwareCompleter(completions).complete)
+	
+                key = raw_input('Key, [enter] to continue to next line ')
+                if key == '':
+	            self.outputLine(entryType, lineData)# + '\n')
+	            break
+	        if key in completions:
+	            readline.set_completer(BufferAwareCompleter(completions[key]).complete1)
+	
+	        val = raw_input('Val:\t')
+		lineData[key] = val
+
+	        if line in ActionDict:
+	            ActionDict[line]()
+                #line += key + ':' + val + '; '
+        #self.input_loop2(completions)
+
+
 
 def enterAttendance():
     comp = completions['name']
@@ -242,6 +287,7 @@ def reportAttendance(date=time.strftime('%m/%d/%Y')):
     print "\n".join(present)
 
 
+
 	     
 	    
 import sys
@@ -271,4 +317,5 @@ readline.parse_and_bind('tab: complete')
 readline.parse_and_bind('set editing-mode vi')
 
 # Prompt the user for text
-input_loop(ActionDict)
+#input_loop(ActionDict)
+GradeBook.input_loop2(completions)
