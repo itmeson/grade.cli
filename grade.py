@@ -182,7 +182,7 @@ class Grade():
     def parsePAIRS(self):
         f = open(self.fname, 'rU')
         self.possibilities = {}
-	self.dataTYPES = set([])
+	self.dataTYPES = set(['stop'])
         for line in f:
 	    data = line.strip().split(';')
 	    for pair in data:
@@ -213,31 +213,38 @@ class Grade():
         entryType = ''
 	lineData = {}
 	while line != 'stop':
+	    print "Current buffer:\t", lineData
+	    readline.set_completer(BufferAwareCompleter(self.dataTYPES).complete1)
             temp = raw_input('Entry type ("stop") to quit)[enter] to use default\n')
             if temp == 'stop':
 	        break
 
-	    if temp != '':
+	    if temp != '' and temp != entryType:
+		lineData = {}
 		entryType = temp
 	    
-	    line = entryType + '; '
-            key = 'name'
+	    if entryType == "standard" or entryType == "quiz" or entryType == "hw":
+	        key = "date"
+            else:
+		key = 'name'
 
             while key != '':
     	        if key == 'name':
 		    readline.set_completer(BufferAwareCompleter(completions[key]).complete1)
 		    val = raw_input('NAME:\t')
 		    if val == '':
+	                readline.set_completer(BufferAwareCompleter(completions).complete)
 			break
 		    lineData[key] = val
 		    key = 'temp'
 		    continue
+
 		key = ''
 	        readline.set_completer(BufferAwareCompleter(completions).complete)
 	
                 key = raw_input('Key, [enter] to continue to next line ')
                 if key == '':
-	            self.outputLine(entryType, lineData)# + '\n')
+	            self.outputLine(entryType, lineData)
 	            break
 		elif key == 'stop':
 		    break

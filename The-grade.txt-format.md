@@ -34,17 +34,17 @@ Within each line/record, after the entry type, will be a list of key:value pairs
 For example:
 <pre>
 id; name:Einstein, Albert; section:A; gender:M
-att; date:12/02/2013; name:Einstein, Albert; present:1
-att; date:12/03/2013; name:Einstein, Albert; present:0
-quiz; date:12/03/2013; quiz-name:Quiz 2; quiz-type:[all,makeup,retake]; skill:C1; skill:M2; skill:T3
-quiz-score; date:12/03/2013; quiz-name:Quiz 2; name:Einstein, Albert; skill:C1; score:3
-quiz-score; date:12/03/2013; quiz-name:Quiz 2; name:Einstein, Albert; skill:M2; score:1
-quiz-score; date:12/03/2013; quiz-name:Quiz 2; name:Einstein, Albert; skill:T3; score:4
+att; date:12022013; name:Einstein, Albert; present:1
+att; date:12032013; name:Einstein, Albert; present:0
+quiz; date:12032013; quizname:Quiz 2; quiztype:[all,makeup,retake]; skill:C1; skill:M2; skill:T3
+quizscore; date:12032013; quiz-name:Quiz 2; name:Einstein, Albert; skill:C1; score:3
+quizscore; date:12032013; quiz-name:Quiz 2; name:Einstein, Albert; skill:M2; score:1
+quizscore; date:12032013; quiz-name:Quiz 2; name:Einstein, Albert; skill:T3; score:4
 standard; skill:C1; description:"Communicating results using a graph"
 standard; skill:M2; description:"Constructing a model given relevant data"
 standard; skill:T3; description:"Identifying relevant variables in constructing an experiment"
-hw; date:12/10/2013; hw-id:notes2; scorepossible:5; description:"Notes for Winter Week 2"
-hw-score; hw-id:notes2; name:Einstein, Albert; score:5
+hw; date:12102013; hwid:notes2; scorepossible:5; description:"Notes for Winter Week 2"
+hwscore; hwid:notes2; name:Einstein, Albert; score:5
 </pre>
 
 
