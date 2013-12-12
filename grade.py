@@ -221,26 +221,34 @@ class Grade():
 		entryType = temp
 	    
 	    line = entryType + '; '
-            key = 'a'
+            key = 'name'
 
             while key != '':
-    	        key = ''
+    	        if key == 'name':
+		    readline.set_completer(BufferAwareCompleter(completions[key]).complete1)
+		    val = raw_input('NAME:\t')
+		    if val == '':
+			break
+		    lineData[key] = val
+		    key = 'temp'
+		    continue
+		key = ''
 	        readline.set_completer(BufferAwareCompleter(completions).complete)
 	
                 key = raw_input('Key, [enter] to continue to next line ')
                 if key == '':
 	            self.outputLine(entryType, lineData)# + '\n')
 	            break
+		elif key == 'stop':
+		    break
 	        if key in completions:
 	            readline.set_completer(BufferAwareCompleter(completions[key]).complete1)
 	
 	        val = raw_input('Val:\t')
+		if val == 'stop':
+		    break
 		lineData[key] = val
 
-	        if line in ActionDict:
-	            ActionDict[line]()
-                #line += key + ':' + val + '; '
-        #self.input_loop2(completions)
 
 
 
@@ -304,7 +312,6 @@ print GradeBook.dataTYPES
 defaults =     {
      'stop':[],
      'att':[],
-     'report Attendance':[]
     }
 ActionDict = {'att':enterAttendance, 'report Attendance':reportAttendance}
 

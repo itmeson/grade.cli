@@ -25,21 +25,27 @@ about your students that are sliceable by _x_ axes.
 The format
 ==========
 
-All lines in a grade.txt file are *single observations about a particular student* or they are definitions of types or instances of observations, with all data entries in a line given in key:value pairs.
+All lines in a grade.txt file are *single observations about a particular student* or they are definitions of types or instances of observations.  Fields in a given line are separated by semicolons.  The first entry of a line/record indicates the entry type, for example:  id for information about a student (email address, section, demographics, etc.); "att" for a daily attendance entry; "hw" to define the parameters of a homework assignment; "hw-score" to give a student's results on a homework assignment; "quiz" to define the parameters of a quiz or other assessment (ie date, which standards were assessed, etc.); "quiz-score" to give a student's results on a quiz assessment; "standard" to define a skill/goal to be assessed in the course.
+
+Within each line/record, after the entry type, will be a list of key:value pairs, separated by semicolons, giving the appropriate entry parameters. Most entries will have a date:date_val pair, most will have a name:name_val pair.
+
+
 
 For example:
-
- @ date:2013-11-24 name:"Albert Einstein" quiz:"Quiz 10 Newton's 2nd Law" "R evience":3 "M acceleration":2 @
- @ date:2013-11-24 quiz:"Quiz 10 Newton's 2nd Law" skill:"R evidence" skill:"M acceleration" @
- @ skill:"R evidence" description:"I am able to evaluate the meaning of evidence about a phenomenon in order to draw conclusions about explanations of that phenomenon, using data provided in the form of tables, graphs, and narrative observations." @
-
-define a relevant skill, a quiz that assesses that skill, and a particular student's results on that quiz.
-
- @ date:2013-11-24 name:"Albert Einstein" attendance:present@
- @ date:2013-11-24 name:"Max Planck" attendance:absent@
-
-detail student attendance.
-
+<pre>
+id; name:Einstein, Albert; section:A; gender:M
+att; date:12/02/2013; name:Einstein, Albert; present:1
+att; date:12/03/2013; name:Einstein, Albert; present:0
+quiz; date:12/03/2013; quiz-name:Quiz 2; quiz-type:[all,makeup,retake]; skill:C1; skill:M2; skill:T3
+quiz-score; date:12/03/2013; quiz-name:Quiz 2; name:Einstein, Albert; skill:C1; score:3
+quiz-score; date:12/03/2013; quiz-name:Quiz 2; name:Einstein, Albert; skill:M2; score:1
+quiz-score; date:12/03/2013; quiz-name:Quiz 2; name:Einstein, Albert; skill:T3; score:4
+standard; skill:C1; description:"Communicating results using a graph"
+standard; skill:M2; description:"Constructing a model given relevant data"
+standard; skill:T3; description:"Identifying relevant variables in constructing an experiment"
+hw; date:12/10/2013; hw-id:notes2; scorepossible:5; description:"Notes for Winter Week 2"
+hw-score; hw-id:notes2; name:Einstein, Albert; score:5
+</pre>
 
 
 
