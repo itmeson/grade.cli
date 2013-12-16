@@ -198,11 +198,38 @@ class Grade():
 			self.possibilities[key].add(val)
    
 
+    def parseDATA(self):
+	f = open(self.fname,'rU')
+	self.names = {x:{} for x in self.possibilities['name']}
+	self.things = {}#x:[] for x in self.dataTYPES}
+	for line in f:
+	    data = line.strip().split(';')
+	    dataTYPE = data[0]
+	    results = {}	    
+            for pair in data[1:]:
+	        info = pair.strip().split(':')
+		
+	        key = info[0].strip().replace('\"','')
+         	val = info[1].strip().replace('\"','')
+		results[key] = val
+	    if 'name' in results:
+		student = results.pop('name', None)
+		if dataTYPE in self.names[student]:
+		    self.names[student][dataTYPE].append(results)
+	  	else:
+		    self.names[student][dataTYPE] = [results]		
+	    else:
+		##this means it's a thing definition
+		if dataTYPE in self.things:
+            	    self.things[dataTYPE].append(results)
+		else:
+		    self.things[dataTYPE] = [results]
     def outputLine(self, entryType, lineData):
 	f = open(self.fname, 'a')
 	line = entryType + '; '
-	for key in lineData:
+	for key in lineData.keys()[:-1]:
 	    line +=  key + ':' + lineData[key] + '; '
+	line += lineData.keys()[-1] + ':' + lineData[lineData.keys()[-1]]
 	f.write(line+ '\n')
 	f.close()
 
@@ -306,6 +333,7 @@ def reportAttendance(date=time.strftime('%m/%d/%Y')):
 	     
 	    
 import sys
+
 if len(sys.argv) > 1:
     fname = sys.argv[1]
 else:
@@ -313,23 +341,22 @@ else:
 	
 GradeBook = Grade(fname)
 
-print GradeBook.dataTYPES
-#poss = parsePAIRS()
-# Register our completer function
-defaults =     {
-     'stop':[],
-     'att':[],
-    }
-ActionDict = {'att':enterAttendance, 'report Attendance':reportAttendance}
+if __name__ == "__main__":
+    print GradeBook.dataTYPES
+    defaults =     {
+         'stop':[],
+         'att':[],
+         }
+    ActionDict = {'att':enterAttendance, 'report Attendance':reportAttendance}
 
-completions = dict(defaults.items() + GradeBook.possibilities.items())#poss.items())
+    completions = dict(defaults.items() + GradeBook.possibilities.items())#poss.items())
 
-readline.set_completer(BufferAwareCompleter(completions).complete)
+    readline.set_completer(BufferAwareCompleter(completions).complete)
 
 # Use the tab key for completion
-readline.parse_and_bind('tab: complete')
-readline.parse_and_bind('set editing-mode vi')
+    readline.parse_and_bind('tab: complete')
+    readline.parse_and_bind('set editing-mode vi')
 
 # Prompt the user for text
 #input_loop(ActionDict)
-GradeBook.input_loop2(completions)
+    GradeBook.input_loop2(completions)
