@@ -210,7 +210,7 @@ class Grade():
 	        info = pair.strip().split(':')
 		
 	        key = info[0].strip().replace('\"','')
-         	val = info[1].strip().replace('\"','')
+		val = info[1].strip().replace('\"','')
 		results[key] = val
 	    if 'name' in results:
 		student = results.pop('name', None)
@@ -224,6 +224,8 @@ class Grade():
             	    self.things[dataTYPE].append(results)
 		else:
 		    self.things[dataTYPE] = [results]
+ 
+
     def outputLine(self, entryType, lineData):
 	f = open(self.fname, 'a')
 	line = entryType + '; '
