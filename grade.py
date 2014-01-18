@@ -243,6 +243,8 @@ class Grade():
 	lineData = {}
 	while line != 'stop':
 	    print "Current buffer:\t", lineData
+	    lineData.pop('comment',0)     ## Do not reuse the comment field from one line to the next.
+					   ## There is probably a better way to do this
 	    readline.set_completer(BufferAwareCompleter(self.dataTYPES).complete1)
             temp = raw_input('Entry type ("stop") to quit)[enter] to use default\n')
             if temp == 'stop':
