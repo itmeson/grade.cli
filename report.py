@@ -1,3 +1,6 @@
+import datetime
+
+
 def send(text, email="itmeson@gmail.com", test = False, subject="None"):
 # Import smtplib for the actual sending function
     import smtplib
@@ -39,15 +42,17 @@ def send(text, email="itmeson@gmail.com", test = False, subject="None"):
 
 
 
-def allQuizScore(g, subject="Recent Scores", test=False):
+def allQuizScore(g, subject="Recent Scores", test=False, status=True):
     names = g.GradeBook.names.keys()
     names.sort()	
     for name in names:
+	if status:
+	    print name
         if 'quizscore' in g.GradeBook.names[name]:
             output = ''
             output += name + '\n\n'
 	    quizitems = g.GradeBook.names[name]['quizscore']
-	    quizitems.sort()
+	    quizitems.sort(key=lambda x: datetime.datetime.strptime(x['date'], '%m%d%Y'))
 	    for item in quizitems: 
 	        #print "\t\t", item
 	        date = item['date']
@@ -64,34 +69,10 @@ def allQuizScore(g, subject="Recent Scores", test=False):
             send(output, g.GradeBook.names[name]['id'][0]['email'], test=test, subject = subject)
 
 
-
 import grade as g
 
 
-#poss = g.GradeBook.possibilities
-
-#for p in poss:
-#    print p
-#    for item in poss[p]:
-#	print item,
-#    print "\n\n"
-
-
 g.GradeBook.parseDATA()
-
-#for name in g.GradeBook.names:
-#    print name
-#    for item in g.GradeBook.names[name]:
-#        print "\t", item
-#	for res in g.GradeBook.names[name][item]:
-#	    print "\t\t", res
-#	print "\n"
-#    print "\n\n"
-
-
-#for t in g.GradeBook.things:
-#    print t, '\n\t', g.GradeBook.things[t]
-
 
 allQuizScore(g, subject="LabScience: Recent score updates", test = True)
 
