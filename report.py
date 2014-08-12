@@ -74,5 +74,5 @@ import grade as g
 
 g.GradeBook.parseDATA()
 
-allQuizScore(g, subject="LabScience: Recent score updates", test = True)
+#allQuizScore(g, subject="LabScience: Recent score updates", test = True)
 

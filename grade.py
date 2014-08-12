@@ -180,7 +180,7 @@ class Grade():
 	self.parsePAIRS()
 
     def parsePAIRS(self):
-        f = open(self.fname, 'rU')
+	f = open(self.fname, 'rU')
         self.possibilities = {}
 	self.dataTYPES = set(['stop'])
         for line in f:
@@ -208,8 +208,9 @@ class Grade():
 	    results = {}	    
             for pair in data[1:]:
 	        info = pair.strip().split(':')
-		
-	        key = info[0].strip().replace('\"','')
+	        if len(info) == 1:
+		    print line 
+		key = info[0].strip().replace('\"','')
 		val = info[1].strip().replace('\"','')
 		results[key] = val
 	    if 'name' in results:
@@ -338,10 +339,8 @@ def reportAttendance(date=time.strftime('%m/%d/%Y')):
 	    
 import sys
 
-if len(sys.argv) > 1:
-    fname = sys.argv[1]
-else:
-    fname = "grade.txt"
+fname = "grade.txt"   #change this option to point to a different grade file.
+			#TODO: change this to go into a config file
 	
 GradeBook = Grade(fname)
 
